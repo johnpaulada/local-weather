@@ -6,17 +6,19 @@ const UNIT_SYSTEM = {
   IMPERIAL: 'imperial'
 }
 
-function setCoordinates(callback) {
+function fetchCoordinates(callback) {
 
-  // TODO: Add loader
+  // Start loading
+  setLoading(true)
   console.log('Loading...')
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
-
-      // TODO: Remove loader
-      console.log('Coordinates loaded.')
       callback(position.coords)
+
+      // Loading complete
+      setLoading(false)
+      console.log('Coordinates loaded.')
     },
     (error) => console.log(error)
   );
@@ -30,19 +32,42 @@ function fetchWeather({latitude, longitude}) {
     'APPID': API_KEY
   })
 
-  // TODO: Add loader
+  // Start loading
+  setLoading(true)
   console.log('Loading...')
 
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
-
-      // TODO: Remove loader
+      displayWeather(data)
+      setLoading(false)
       console.log('Weather loaded.')
-
-      // TODO: Display Data
-      console.log(data)
     })
 }
 
-setCoordinates(fetchWeather)
+function displayWeather(data) {
+  const location = `${data.name}, ${data.sys.country}`
+  const icon = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`
+  const description = data.weather[0].description.replace(/\b([a-z])/g, (c) => c.toUpperCase())
+  const locationElement = document.querySelector('.header__subtitle')
+  const descriptionElement = document.querySelector('.description')
+  const iconElement = document.querySelector('.icon')
+
+  locationElement.innerHTML = location
+  descriptionElement.innerHTML = description
+  iconElement.src = icon
+
+  console.log(data);
+}
+
+function setLoading(shouldLoad) {
+  const bodyClass = document.querySelector('body').classList
+
+  if (shouldLoad) {
+    bodyClass.add('translucent')
+  } else {
+    bodyClass.remove('translucent')
+  }
+}
+
+fetchCoordinates(fetchWeather)
