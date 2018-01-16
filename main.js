@@ -1,6 +1,6 @@
 const {buildURL} = ParamHelpers
 const API_KEY   = 'b2709083cba938ec2aba09a017e2285d'
-const API_URL   = 'http://api.openweathermap.org/data/2.5/weather'
+const API_URL   = 'https://api.openweathermap.org/data/2.5/weather'
 const UNIT_SYSTEM = {
   METRIC: 'metric',
   IMPERIAL: 'imperial'
